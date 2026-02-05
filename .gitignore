@@ -1,0 +1,17 @@
+# node
+node_modules/
+dist/
+build/
+.env
+
+# java
+target/
+*.class
+*.log
+
+# IntelliJ
+.idea/
+*.iml
+
+# OS
+.DS_Store
