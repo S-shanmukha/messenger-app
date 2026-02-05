@@ -222,3 +222,4 @@ Only authentication APIs are public:
 
 - Passwords are stored securely (hashed) in the database.
 - Raw passwords are never stored.
+
