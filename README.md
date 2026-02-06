@@ -300,5 +300,5 @@ http://localhost:8080
 ![Login](RepoImage/login.png)
 
 ### Chat Page
-![Chat](./images/chat.png)
+![Chat](RepoImage/chat.png)
 
