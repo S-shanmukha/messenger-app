@@ -302,3 +302,13 @@ http://localhost:8080
 ### Chat Page
 ![Chat](RepoImage/chat.png)
 
+---
+
+## 👤 Author Note
+
+This project was primarily developed and integrated by me, focusing mainly on the **backend architecture, database design, authentication (JWT), APIs** used ai to accelrate my work.
+
+The frontend UI was built with the support of AI-assisted tooling , based on the backend contract I designed.  
+This helped me quickly prototype the interface while ensuring full understanding of the backend workflow and system integration.
+
+I’m continuously improving my frontend knowledge and plan to enhance the UI further with better state management and design patterns.
