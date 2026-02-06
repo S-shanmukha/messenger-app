@@ -237,4 +237,10 @@ Only authentication APIs are public:
 
 ![Architecture Diagram](RepoImage/Architecture.png)
 
+## 📑 Swagger API Documentation
+
+Swagger UI is available here:
+
+👉 [Open Swagger UI](http://localhost:8080/swagger-ui/index.html)
+
 
