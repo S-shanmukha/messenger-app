@@ -35,12 +35,22 @@ Install the following before running the project:
 
 ## 🛠 Backend Installation (Spring Boot)
 
-### Step 1: Clone Repository
+### Clone Repository
 ```bash
 git clone https://github.com/S-shanmukha/messenger-app.git
 cd messenger-app
 ```
+### Install Dependency
+```
+mvn clean install
+```
 ## 🐳 Docker Setup (Optional)
+
+- Install Docker Desktop:
+- Download Docker Desktop
+- Install it
+- Restart system if needed
+- Open Docker Desktop and keep it running
 
 
 ## 🐘 PostgreSQL Setup using Docker
