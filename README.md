@@ -45,7 +45,7 @@ cd messenger-app
 ```
 mvn clean install
 ```
-## 🐳 Docker Setup (Optional)
+## 🐳 Docker Setup 
 
 - Install Docker Desktop:
 - Download Docker Desktop
