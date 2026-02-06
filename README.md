@@ -239,6 +239,8 @@ Only authentication APIs are public:
 
 ## 📑 Swagger API Documentation
 
+After running the backend, open Swagger UI in browser:
+
 Swagger UI is available here:
 
 👉 [Open Swagger UI](http://localhost:8080/swagger-ui/index.html)
