@@ -33,10 +33,11 @@ Install the following before running the project:
 
 ---
 
-## 🛠 Backend Installation (Spring Boot)
+## 🛠 Backend (Spring Boot)
 
 ### Clone Repository
-```bash
+```
+bash
 git clone https://github.com/S-shanmukha/messenger-app.git
 cd messenger-app
 ```
@@ -237,7 +238,7 @@ Only authentication APIs are public:
 
 ![Architecture Diagram](RepoImage/Architecture.png)
 
-## 📑 Swagger API Documentation
+### 📑 Swagger API Documentation
 
 After running the backend, open Swagger UI in browser:
 
@@ -245,4 +246,59 @@ Swagger UI is available here:
 
 👉 [Open Swagger UI](http://localhost:8080/swagger-ui/index.html)
 
+## Frontend
+
+### 💬 Messaging App - Frontend (React)
+
+This is the **Frontend** part of the Messaging App (WhatsApp-like chat system).  
+It is built using **React.js** and communicates with the backend through **REST APIs** for messaging.
+
+---
+
+### 🚀 Tech Stack
+
+- React.js
+- Axios (API calls)
+- WebSocket (SockJS + STOMP)
+- Tailwind CSS / CSS (based on your project)
+- JWT Authentication
+
+---
+
+### Install Dependencies
+```
+npm install
+```
+### Run the React App
+```
+npm start
+```
+Frontend will run at:
+```
+http://localhost:3000
+```
+### 🔗 Backend Connection
+
+Make sure your backend is running on:
+```
+http://localhost:8080
+```
+### ⚙️ API Configuration (Axios)
+
+The frontend uses Axios to connect backend APIs.
+Example:
+```
+const BASE_URL = "http://localhost:8080";
+```
+
+```
+http://localhost:8080
+```
+## 📸 Screenshots
+
+### Login Page
+![Login](RepoImage/login.png)
+
+### Chat Page
+![Chat](./images/chat.png)
 
