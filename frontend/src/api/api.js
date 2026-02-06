@@ -12,7 +12,7 @@ api.interceptors.request.use((config) => {
     const token = localStorage.getItem("jwt");
 
     // endpoints where JWT should NOT be attached
-    const noAuthRoutes = ["/auth/login", "/auth/register"];
+    const noAuthRoutes = ["/auth/signin", "/auth/signup"];
 
     // check if current request url matches public routes
     const isNoAuthRoute = noAuthRoutes.some((route) =>
