@@ -11,13 +11,49 @@ This project was built as part of an interview assignment.
 - User authentication using **JWT**
 - Create **1-1 chats**
 - Create and manage **group chats**
+- Real-time messaging using **WebSockets (STOMP)**
 - Messages are persisted in database
 - Offline message storage and delivery on reconnect
 - Message ordering maintained per conversation
 
 ### ✅ Additional Features
+- Fetch chat history
 - Fetch user chats
 - Add / remove users from group chat
+
+---
+
+## 📌 System Architecture
+
+### Communication Model
+- **REST APIs** are used for:
+  - authentication
+  - chat creation / management
+  - fetching chat history
+
+- **WebSocket (STOMP)** is used for:
+  - real-time messaging
+  - real-time delivery updates
+
+---
+## 🧩 Backend Module Structure
+
+Backend is organized in layered architecture:
+
+- **Controller Layer**  
+  Handles REST endpoints for authentication, chats, and messages.
+
+- **Service Layer**  
+  Contains business logic such as chat creation, validation, offline delivery logic.
+
+- **Repository Layer**  
+  Handles database operations using JPA repositories.
+
+- **Security Layer**  
+  JWT token validation and Spring Security filters.
+
+- **WebSocket Layer**  
+  Handles real-time message broadcasting.
 
 ---
 ## 📦 Installation & Setup
@@ -237,6 +273,40 @@ Only authentication APIs are public:
 ### Architecture Diagram
 
 ![Architecture Diagram](RepoImage/Architecture.png)
+
+## 🌐 Real-Time Messaging (WebSocket + STOMP)
+
+This application uses **Spring Boot WebSocket with STOMP protocol** to enable real-time messaging between users.
+
+WebSocket is used for:
+- Instant message delivery
+- Group message broadcasting
+- Detecting user reconnection
+- Offline message delivery
+
+---
+
+### 🔌 WebSocket Endpoint
+
+Frontend establishes a WebSocket connection using:
+
+```txt
+ws://localhost:8080/ws
+```
+### 📩 STOMP Publish / Subscribe Flow
+
+Client Sends Messages To:
+```
+/app/message
+```
+Server Broadcasts Messages To:
+```
+/group/{chatId}
+```
+Example:
+```
+/group/550e8400-e29b-41d4-a716-446655440000
+```
 
 ### 📑 Swagger API Documentation
 
