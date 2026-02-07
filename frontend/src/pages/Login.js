@@ -19,7 +19,7 @@ export default function Login() {
             const res = await signinApi(form);
 
             localStorage.setItem("jwt", res.data.jwt);
-
+            localStorage.setItem("email", form.email);
             alert("Login Successful ✅");
             navigate("/home");
         } catch (err) {

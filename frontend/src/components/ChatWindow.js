@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     getChatDetailsApi,
     addUserToGroupApi,
     removeUserFromGroupApi,
 } from "../api/chatApi";
 
-import { sendMessageApi } from "../api/messageApi";
 import {
     connectSocket,
     subscribeToChat,
@@ -22,15 +21,24 @@ export default function ChatWindow({ selectedChatId }) {
     // group member input
     const [newMemberId, setNewMemberId] = useState("");
 
-    // connect socket once
+    // prevent multiple subscriptions
+    const subscribedChatIdRef = useRef(null);
+
+    // connect socket only once
     useEffect(() => {
         connectSocket(
-            () => setSocketConnected(true),
-            () => setSocketConnected(false)
+            () => {
+                console.log("✅ socket connected");
+                setSocketConnected(true);
+            },
+            () => {
+                console.log("❌ socket disconnected");
+                setSocketConnected(false);
+            }
         );
     }, []);
 
-    // load chat details when chat changes
+    // load chat details from REST when chat changes
     useEffect(() => {
         if (!selectedChatId) return;
 
@@ -38,26 +46,6 @@ export default function ChatWindow({ selectedChatId }) {
             try {
                 const res = await getChatDetailsApi(selectedChatId);
                 setSelectedChat(res.data);
-
-                // subscribe for realtime messages
-                if (socketConnected) {
-                    subscribeToChat(selectedChatId, (newMsg) => {
-                        setSelectedChat((prev) => {
-                            if (!prev) return prev;
-
-                            const alreadyExists = prev.messages.some(
-                                (m) => m.id === newMsg.id
-                            );
-
-                            if (alreadyExists) return prev;
-
-                            return {
-                                ...prev,
-                                messages: [...prev.messages, newMsg],
-                            };
-                        });
-                    });
-                }
             } catch (err) {
                 console.log("Load Chat Error:", err.response?.data || err.message);
                 alert("Failed to load chat ❌");
@@ -65,42 +53,69 @@ export default function ChatWindow({ selectedChatId }) {
         };
 
         loadChat();
+    }, [selectedChatId]);
+
+    // subscribe websocket ONLY when chatId changes and socket is connected
+    useEffect(() => {
+        if (!selectedChatId) return;
+        if (!socketConnected) return;
+
+        // prevent duplicate subscribe
+        if (subscribedChatIdRef.current === selectedChatId) return;
+
+        console.log("📌 Subscribing to chat:", selectedChatId);
+
+        subscribeToChat(selectedChatId, (newMsg) => {
+            console.log("📩 WS MESSAGE RECEIVED:", newMsg);
+
+            setSelectedChat((prev) => {
+                if (!prev) return prev;
+
+                const alreadyExists = prev.messages.some((m) => m.id === newMsg.id);
+                if (alreadyExists) return prev;
+
+                return {
+                    ...prev,
+                    messages: [...prev.messages, newMsg],
+                };
+            });
+        });
+
+        subscribedChatIdRef.current = selectedChatId;
     }, [selectedChatId, socketConnected]);
 
-    // send message
-    const handleSendMessage = async () => {
-        try {
-            if (!selectedChat) {
-                alert("Select chat first ❌");
-                return;
-            }
-
-            if (!messageText.trim()) return;
-
-            const payload = {
-                chatid: selectedChat.id,
-                message: messageText,
-            };
-
-            // REST API save in DB
-            const res = await sendMessageApi(payload);
-
-            // update UI instantly
-            setSelectedChat((prev) => ({
-                ...prev,
-                messages: [...prev.messages, res.data],
-            }));
-
-            // websocket broadcast
-            if (socketConnected) {
-                sendMessageSocket(payload);
-            }
-
-            setMessageText("");
-        } catch (err) {
-            console.log("Send Message Error:", err.response?.data || err.message);
-            alert("Failed to send message ❌");
+    // send message using websocket only
+    const handleSendMessage = () => {
+        if (!selectedChat) {
+            alert("Select chat first ❌");
+            return;
         }
+
+        if (!messageText.trim()) return;
+
+        if (!socketConnected) {
+            alert("Socket not connected ❌");
+            return;
+        }
+
+        const email = localStorage.getItem("email");
+
+        if (!email) {
+            alert("Email not found in localStorage ❌ Login again");
+            return;
+        }
+
+        const payload = {
+            chatid: selectedChat.id,
+            message: messageText,
+            email: email,
+        };
+
+        console.log("📤 Sending WS message:", payload);
+
+        sendMessageSocket(payload);
+
+        setMessageText("");
     };
 
     // add user to group
@@ -117,7 +132,6 @@ export default function ChatWindow({ selectedChatId }) {
 
             alert("User added to group ✅");
 
-            // reload chat
             const updated = await getChatDetailsApi(selectedChat.id);
             setSelectedChat(updated.data);
 
@@ -137,7 +151,6 @@ export default function ChatWindow({ selectedChatId }) {
 
             alert("User removed from group ✅");
 
-            // reload chat
             const updated = await getChatDetailsApi(selectedChat.id);
             setSelectedChat(updated.data);
         } catch (err) {
@@ -258,9 +271,9 @@ export default function ChatWindow({ selectedChatId }) {
                 ) : selectedChat.messages.length === 0 ? (
                     <h3 style={{ color: "gray" }}>No messages yet</h3>
                 ) : (
-                    selectedChat.messages.map((msg) => (
+                    selectedChat.messages.map((msg, index) => (
                         <div
-                            key={msg.id}
+                            key={msg.id || index}
                             style={{
                                 marginBottom: "10px",
                                 padding: "10px",
@@ -270,11 +283,11 @@ export default function ChatWindow({ selectedChatId }) {
                                 maxWidth: "70%",
                             }}
                         >
-                            <b>{msg.senderName}</b>
-                            <p style={{ margin: "5px 0" }}>{msg.message}</p>
-                            <small style={{ color: "gray" }}>
-                                {msg.createdAt ? msg.createdAt : ""}
-                            </small>
+                            <b style={{ display: "block" }}>
+                                {msg.senderName ? msg.senderName : msg.email ? msg.email : "Unknown"}
+                            </b>
+
+                            <p style={{ margin: "5px 0", color: "black" }}>{msg.message}</p>
                         </div>
                     ))
                 )}

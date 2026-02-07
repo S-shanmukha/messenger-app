@@ -51,7 +51,7 @@ public class MessageController {
 
                 sendMessageRequest.setUserid(user.getId());
 
-                Message message = messageService.sendMessage(sendMessageRequest);
+                Message message = messageService.sendMessage(sendMessageRequest,user);
 
                 MessageResponseDto dto = new MessageResponseDto();
                 dto.setId(message.getId());

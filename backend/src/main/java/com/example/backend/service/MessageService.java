@@ -32,9 +32,9 @@ public class MessageService {
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
-    public Message sendMessage(SendMessageRequest sendMessageRequest) {
+    public Message sendMessage(SendMessageRequest sendMessageRequest,User user) {
 
-        User user = userService.findUserById(sendMessageRequest.getUserid());
+//        User user = userService.findUserById(sendMessageRequest.getUserid());
         Chat chat = chatService.findChatById(sendMessageRequest.getChatid());
 
         Message message = new Message();
@@ -43,37 +43,6 @@ public class MessageService {
         message.setMessage(sendMessageRequest.getMessage());
 
         message = messageRepo.save(message);
-
-        if (chat.isGroupChat()) {
-
-            simpMessagingTemplate.convertAndSend(
-                    "/topic/group/" + chat.getId(),
-                    sendMessageRequest.getMessage()   // ✅ only string
-            );
-
-        }
-        // Single Chat
-        else {
-
-            UUID receiverUserId = chat.getUsers()
-                    .stream()
-                    .filter(u -> !u.getId().equals(user.getId()))
-                    .findFirst()
-                    .orElseThrow(() -> new UserException("Receiver not found"))
-                    .getId();
-
-            simpMessagingTemplate.convertAndSendToUser(
-                    receiverUserId.toString(),
-                    "/queue/messages",
-                    sendMessageRequest.getMessage()   // ✅ only string
-            );
-
-            simpMessagingTemplate.convertAndSendToUser(
-                    user.getId().toString(),
-                    "/queue/messages",
-                    sendMessageRequest.getMessage()   // ✅ only string
-            );
-        }
 
         return message;
     }

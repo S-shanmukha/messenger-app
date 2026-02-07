@@ -18,6 +18,14 @@ public class UserService {
         this.userRepo = userRepo;
         this.tokenProvider = tokenProvider;
     }
+    public User finduserByemail(String email) throws UserException{
+//        String email=tokenProvider.getEmailFromToken(jwt);
+        User user=userRepo.findByEmail(email);
+        if(user==null) {
+            throw new UserException("User not found");
+        }
+        return user;
+    }
 
     public boolean UserAlreadyExist(String email) {
             User user=userRepo.findByEmail(email);

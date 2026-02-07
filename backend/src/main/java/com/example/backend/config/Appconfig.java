@@ -36,6 +36,8 @@ public class Appconfig {
                             corsConfiguration.setAllowedMethods(Arrays.asList("*"));
                             corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
                             corsConfiguration.setExposedHeaders(Arrays.asList("Authorization"));
+
+                            corsConfiguration.setAllowCredentials(true);
                             corsConfiguration.setMaxAge(3600L);
 
                             return corsConfiguration;
