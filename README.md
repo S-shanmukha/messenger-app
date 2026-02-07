@@ -11,7 +11,7 @@ This project was built as part of an interview assignment.
 - User authentication using **JWT**
 - Create **1-1 chats**
 - Create and manage **group chats**
-- Real-time messaging using **WebSockets (STOMP)**
+- Real-time messaging using **WebSockets (STOMP)** 
 - Messages are persisted in database
 - Offline message storage and delivery on reconnect
 - Message ordering maintained per conversation
